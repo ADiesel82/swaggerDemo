@@ -1,0 +1,80 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Demo swagger app - get distance between 2 geo points
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /api/list:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: test_api
+    get:
+      description: Returns all incoming requests in descending order
+      # used as the method name of the controller
+      operationId: list
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Points"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /api/add:
+     x-swagger-router-controller: test_api
+     post:
+      description: Receives array of 2 points and calculates distance between them
+      operationId: add
+      parameters:
+        - name: points
+          in: query
+          description: Array with array of points
+          required: true
+          schema:
+              $ref: "#/definitions/PointsItem"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/PointsResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+          
+# complex objects have schema definitions
+definitions:
+  Points:
+      items:
+        $ref: "#/definitions/PointsItem"
+  PointsItem:
+    properties:
+      points:
+        type: array
+  PointsResponse:
+      properties:
+        distance:
+          type: number
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
