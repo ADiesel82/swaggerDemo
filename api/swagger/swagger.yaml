@@ -1,16 +1,16 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
   version: "0.0.1"
   title: Demo swagger app - get distance between 2 geo points
 # during dev, should point to your local machine
-host: localhost:10010
+host: 127.0.0.1:10010
 # basePath prefixes all resource paths 
-basePath: /
+basePath: /api
 # 
 schemes:
   # tip: remove http to make production-grade
   - http
-  - https
+#  - https
 # format of bodies a client can send (Content-Type)
 consumes:
   - application/json
@@ -18,7 +18,7 @@ consumes:
 produces:
   - application/json
 paths:
-  /api/list:
+  /list:
     # binds a127 app logic to a route
     x-swagger-router-controller: test_api
     get:
@@ -29,31 +29,34 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Points"
+            $ref: "#/definitions/AddPointsResponse"
         # responses may fall through to errors
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /api/add:
+  /add:
      x-swagger-router-controller: test_api
      post:
       description: Receives array of 2 points and calculates distance between them
       operationId: add
+      consumes:
+          - application/json
+      produces:
+          - application/json
       parameters:
-        - name: points
-          in: query
-          description: Array with array of points
-          required: true
-          schema:
-              $ref: "#/definitions/PointsItem"
+          - in: body
+            name: body
+            description: JSON object with array of 2 geo points
+            required: true
+            schema:
+              $ref: '#/definitions/PointsRequest'
       responses:
         "200":
           description: Success
           schema:
             # a pointer to a definition
-            $ref: "#/definitions/PointsResponse"
-        # responses may fall through to errors
+            $ref: "#/definitions/AddPointsResponse"
         default:
           description: Error
           schema:
@@ -61,17 +64,32 @@ paths:
           
 # complex objects have schema definitions
 definitions:
-  Points:
-      items:
-        $ref: "#/definitions/PointsItem"
-  PointsItem:
+  Point:
+    type: object
+    required:
+      - lat
+      - lon
+    properties:
+      lat:
+        type: number
+      lon:
+        type: number
+  PointsRequest:
+    type: object
+    required:
+        - points
     properties:
       points:
         type: array
-  PointsResponse:
-      properties:
-        distance:
-          type: number
+        items:
+          $ref: '#/definitions/Point'
+      example: [{lat: 1, lon: 2}, {lat: 2, lon: 3}]
+  AddPointsResponse:
+    required:
+      - distance
+    properties:
+      distance:
+        type: number
   ErrorResponse:
     required:
       - message
