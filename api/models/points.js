@@ -3,12 +3,17 @@ var mongoose = require('mongoose'),
 
 var PointsSchema = new Schema({
     points: {
-        type: [[Number]],
+        type: [{}],
         required: true
     },
     distance: {
         type: Number,
         required: true
+    },
+    measure: {
+        type: String,
+        required: true,
+        default: 'km'
     },
     created: {
         type: Date,

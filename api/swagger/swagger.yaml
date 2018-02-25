@@ -29,7 +29,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/AddPointsResponse"
+            $ref: "#/definitions/PointsListResponse"
         # responses may fall through to errors
         default:
           description: Error
@@ -39,18 +39,14 @@ paths:
      x-swagger-router-controller: test_api
      post:
       description: Receives array of 2 points and calculates distance between them
-      operationId: add
-      consumes:
-          - application/json
-      produces:
-          - application/json
+      operationId: addPoint
       parameters:
-          - in: body
-            name: body
-            description: JSON object with array of 2 geo points
-            required: true
-            schema:
-              $ref: '#/definitions/PointsRequest'
+        - name: points
+          in: body
+          description: JSON object with array of 2 geo points
+          required: true
+          schema: 
+            $ref: "#/definitions/PointsRequest"
       responses:
         "200":
           description: Success
@@ -72,8 +68,10 @@ definitions:
     properties:
       lat:
         type: number
+        format: double
       lon:
         type: number
+        format: double
   PointsRequest:
     type: object
     required:
@@ -81,18 +79,35 @@ definitions:
     properties:
       points:
         type: array
-        items:
-          $ref: '#/definitions/Point'
-      example: [{lat: 1, lon: 2}, {lat: 2, lon: 3}]
+        items: 
+          type: object
+          $ref: "#/definitions/Point"
+    example:
+      application/json:
+        {
+          "points": [{"lat": 44.960278, "lon": 34.114679}, {"lat": 44.962123, "lon": 34.120322}]
+        }
   AddPointsResponse:
     required:
       - distance
+      - measure
     properties:
       distance:
         type: number
+        format: double
+      measure:
+        type: string
   ErrorResponse:
     required:
       - message
     properties:
       message:
         type: string
+  PointsListResponse:
+    required:
+      - points
+    properties:
+      points:
+        type: array
+        items:
+          type: object

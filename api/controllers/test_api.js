@@ -26,8 +26,8 @@ var Points = require('../models/points');
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  list: getList,
-  add: addPoint
+    list: getList,
+    addPoint: addPoint
 };
 
 /*
@@ -39,45 +39,64 @@ module.exports = {
 function getList(req, res) {
 
     Points.find(function (err, data) {
-        if(err) { return handleError(res, err); }
+        if (err) {
+            return handleError(res, err);
+        }
         return res.status(200).json(data);
-    });
+    }).sort('-created');
 }
 
 
+/**
+ * { points: [{lat: 44.960278, lon: 34.114679}, {lat: 44.962123, lon: 34.120322}]} #490.18
+ * @param req
+ * @param res
+ */
 function addPoint(req, res) {
 
-    var a = req.body.points[0][0] - req.body.points[1][0];
-    var b = req.body.points[0][1] - req.body.points[1][1];
-    var distance = Math.sqrt( a*a + b*b );
+
+    var a = req.body.points[0];
+    var b = req.body.points[1];
+
+    var distance = getDistanceFromLatLonInKm(a.lat, a.lon, b.lat, b.lon);
 
     var newPoint = {
         points: req.body.points,
-        distance: distance
+        distance: distance,
+        measure: 'km'
     };
 
-    Points.create(newPoint, function(err, content) {
-        if(err) { return handleError(res, err); }
-        console.log(content);
-        return res.status(201).json(content);
+    Points.create(newPoint, function (err, content) {
+        if (err) {
+            return handleError(res, err);
+        }
+        return res.status(201).json({
+            "distance": content.distance,
+            "measure": content.measure
+        });
     });
 }
 
-function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+function handleError(res, err) {
+    console.log(err);
+    return res.status(403).json(JSON.stringify(err));
+}
+
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
     var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = deg2rad(lon2-lon1);
+    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
     var a =
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon/2) * Math.sin(dLon/2)
+        Math.sin(dLon / 2) * Math.sin(dLon / 2)
     ;
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
     return d;
 }
 
 function deg2rad(deg) {
-    return deg * (Math.PI/180)
+    return deg * (Math.PI / 180)
 }
 
