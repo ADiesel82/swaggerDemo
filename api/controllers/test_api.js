@@ -70,7 +70,7 @@ function addPoint(req, res) {
         if (err) {
             return handleError(res, err);
         }
-        return res.status(201).json({
+        return res.status(200).json({
             "distance": content.distance,
             "measure": content.measure
         });
@@ -78,8 +78,7 @@ function addPoint(req, res) {
 }
 
 function handleError(res, err) {
-    console.log(err);
-    return res.status(403).json(JSON.stringify(err));
+    return res.status(400).json(JSON.stringify(err));
 }
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
