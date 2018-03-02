@@ -2,6 +2,8 @@
 
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
+var helmet = require('helmet');
+app.use(helmet());
 module.exports = app; // for testing
 
 var mongoose = require('mongoose');
@@ -11,6 +13,8 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log("DB Connected");
 });
+
+
 
 var config = {
   appRoot: __dirname // required config

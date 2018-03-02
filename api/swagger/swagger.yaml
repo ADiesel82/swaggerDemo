@@ -1,36 +1,28 @@
 swagger: '2.0'
 info:
   version: "0.0.1"
-  title: Demo swagger app - get distance between 2 geo points
-# during dev, should point to your local machine
+  title: Demo swagger app - stage 2 - app 1
+  description: app 1 is designed for auth/registration procedures
 host: 127.0.0.1:10010
-# basePath prefixes all resource paths 
 basePath: /api
-# 
 schemes:
-  # tip: remove http to make production-grade
   - http
 #  - https
-# format of bodies a client can send (Content-Type)
 consumes:
   - application/json
-# format of the responses to the client (Accepts)
 produces:
   - application/json
 paths:
-  /list:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: test_api
+  /register:
+    x-swagger-router-controller: auth
     get:
       description: Returns all incoming requests in descending order
-      # used as the method name of the controller
-      operationId: list
+      operationId: register
       responses:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PointsListResponse"
-        # responses may fall through to errors
+            $ref: "#/definitions/RegisterRequest"
         default:
           description: Error
           schema:
@@ -51,67 +43,25 @@ paths:
         "200":
           description: Success
           schema:
-            # a pointer to a definition
             $ref: "#/definitions/AddPointsResponse"
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-          
-# complex objects have schema definitions
 definitions:
-  Point:
-    type: object
-    description: GEO point
-    required:
-      - lat
-      - lon
-    properties:
-      lat:
-        type: number
-        format: double
-        description: Latitude of a point
-      lon:
-        type: number
-        format: double
-        description: Longitude of a point
-  PointsRequest:
-    type: object
-    required:
-        - points
-    properties:
-      points:
-        type: array
-        description: array of lat & lon objects
-        items: 
-          type: object
-          $ref: "#/definitions/Point"
-    example:
-      application/json:
-        {
-          "points": [{"lat": 44.960278, "lon": 34.114679}, {"lat": 44.962123, "lon": 34.120322}]
-        }
-  AddPointsResponse:
-    required:
-      - distance
-      - measure
-    properties:
-      distance:
-        type: number
-        format: double
-      measure:
-        type: string
   ErrorResponse:
     required:
       - message
     properties:
       message:
         type: string
-  PointsListResponse:
+  RegisterRequest:
+    type: object
     required:
-      - points
+      - login
+      - password
     properties:
-      points:
-        type: array
-        items:
-          type: object
+      login:
+        type: string
+      password:
+        type: string

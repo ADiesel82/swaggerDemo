@@ -1,6 +1,27 @@
 version: "2.1"
 services:
-        mongo:
-            image: "mongo:3"
-            ports:
-              - "27017:27017"
+    mongo:
+      image: "mongo:3"
+      ports:
+        - "27017:27017"
+    redis:
+      image: redis
+      ports:
+        - "6379:6379"
+    app1:
+      build:
+        context: ./build/app1
+      links:
+        - mongo
+        - redis
+    app2:
+      build:
+        context: ./build/app1
+      links:
+        - mongo
+        - redis
+
+networks:
+  public:
+  backend:
+    - driver: overlay

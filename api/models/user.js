@@ -1,19 +1,18 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var PointsSchema = new Schema({
-    points: {
-        type: [{}],
-        required: true
-    },
-    distance: {
-        type: Number,
-        required: true
-    },
-    measure: {
+var UserSchema = new Schema({
+    login: {
         type: String,
-        required: true,
-        default: 'km'
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    salt: {
+        type: String,
+        required: true
     },
     created: {
         type: Date,
@@ -21,4 +20,4 @@ var PointsSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('Points', PointsSchema);
+module.exports = mongoose.model('User', UserSchema);
