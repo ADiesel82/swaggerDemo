@@ -1,0 +1,101 @@
+swagger: '2.0'
+info:
+  version: "0.0.1"
+  title: Demo swagger app - stage 2 - app 1
+  description: app 1 is designed for auth/registration procedures
+host: 127.0.0.1:10001
+basePath: /api
+schemes:
+  - http
+#  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /register:
+    x-swagger-router-controller: auth
+    post:
+      description: Registers user by login/password and adds token for app2
+      operationId: register
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+           $ref: "#/definitions/RegisterRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessSimpleResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /login:
+    x-swagger-router-controller: auth
+    post:
+      description: Login by login/password
+      operationId: login
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+           $ref: "#/definitions/LoginRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessLoginResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+definitions:
+  SuccessSimpleResponse:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  RegisterRequest:
+    type: object
+    required:
+      - login
+      - password
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+  LoginRequest:
+    type: object
+    required:
+      - login
+      - password
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+  SuccessLoginResponse:
+      required:
+        - id
+        - login
+        - token
+      properties:
+        id:
+          type: string
+        login:
+          type: string
+        token:
+          type: string
+          description: JWT token for making requests to app2

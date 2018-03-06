@@ -4,15 +4,17 @@ var mongoose = require('mongoose'),
 var UserSchema = new Schema({
     login: {
         type: String,
-        required: true
+        required: true,
+        index: { unique: true }
     },
     password: {
         type: String,
         required: true
     },
-    salt: {
+    token: {
         type: String,
-        required: true
+        required: true,
+        index: { unique: true }
     },
     created: {
         type: Date,

@@ -8,7 +8,7 @@ module.exports = app; // for testing
 
 var mongoose = require('mongoose');
 var db = mongoose.connection;
-mongoose.connect("mongodb://localhost:27017/swaggerDemo");
+mongoose.connect("mongodb://127.0.0.1:27017/swaggerDemo2");
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log("DB Connected");
@@ -26,7 +26,7 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   // install middleware
   swaggerExpress.register(app);
 
-  var port = process.env.PORT || 10010;
+  var port = process.env.PORT || 10001;
   app.listen(port);
 
   if (swaggerExpress.runner.swagger.paths['/api']) {
