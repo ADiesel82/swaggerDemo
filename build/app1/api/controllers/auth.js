@@ -3,7 +3,7 @@
 var securePassword = require('secure-password');
 var jwt = require('jsonwebtoken');
 var User = require('../models/user');
-var config = require('../config/passport');
+var config = require('../../config/passport');
 
 exports.register = function (req, res) {
     var pwd = securePassword();
@@ -33,20 +33,29 @@ exports.login = function (req, res) {
     User.findOne({"login": req.body.login}, function (err, user) {
         if (err) {
             console.log(err);
-            return handleError(res, "Invalid password or username");
+            // return handleError(res, "Invalid password or username");
+            return res.status(401).json({
+                "auth": false,
+                "token": null
+            });
         }
 
         if (pwd.verifySync(Buffer.from(req.body.password), Buffer.from(user.password)) === securePassword.VALID){
             return res.status(200).json({
-                "id": user.id,
-                "login": user.login,
+                "auth": true,
                 "token": user.token
             });
         } else {
-            console.log(err);
-            return handleError(res, "Invalid password or username");
+            return res.status(401).json({
+                "auth": false,
+                "token": null
+            });
         }
     });
+};
+
+exports.get = function(req, res) {
+    res.status(200).send({ auth: false, token: null });
 };
 
 function handleError(res, err) {

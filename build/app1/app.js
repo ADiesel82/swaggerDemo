@@ -8,7 +8,7 @@ module.exports = app; // for testing
 
 var mongoose = require('mongoose');
 var db = mongoose.connection;
-mongoose.connect("mongodb://127.0.0.1:27017/swaggerDemo2");
+mongoose.connect("mongodb://mongo:27017/app1");
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log("DB Connected");

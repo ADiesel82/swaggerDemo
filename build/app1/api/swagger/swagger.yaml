@@ -48,7 +48,23 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/SuccessLoginResponse"
+            $ref: "#/definitions/LoginResponse"
+        "401":
+          description: User not found or password does not match
+          schema:
+            $ref: "#/definitions/LoginResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /logout:
+    get:
+      description: logout
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/LoginResponse"
         default:
           description: Error
           schema:
@@ -86,16 +102,13 @@ definitions:
         type: string
       password:
         type: string
-  SuccessLoginResponse:
+  LoginResponse:
       required:
-        - id
-        - login
+        - auth
         - token
       properties:
-        id:
-          type: string
-        login:
-          type: string
+        auth:
+          type: boolean
         token:
           type: string
-          description: JWT token for making requests to app2
+          description: JWT token

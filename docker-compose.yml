@@ -5,27 +5,37 @@ services:
       ports:
         - "27017:27017"
       volumes:
-        - ./dumps:/root/backup
+        - ./db:/data/db
     redis:
       image: redis
       ports:
         - "6380:6379"
+    nginx:
+      image: nginx
+      ports:
+        - "8080:80"
+      volumes:
+        - ./html:/usr/share/nginx/html
     app1:
       build:
         context: ./build/app1
+        args:
+          port: 10001
       links:
         - mongo
         - redis
-      environment:
-        PORT: 10001
+      volumes:
+        - ./build/app1:/root/app
     app2:
       build:
-        context: ./build/app1
+        context: ./build/app2
+        args:
+          port: 10002
       links:
         - mongo
         - redis
-      environment:
-        PORT: 10002
+      volumes:
+        - ./build/app2:/root/app
 #networks:
 #  public:
 #  backend:
