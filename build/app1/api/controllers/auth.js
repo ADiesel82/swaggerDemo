@@ -15,6 +15,7 @@ exports.register = function (req, res) {
     user.login = req.body.login;
     user.password = password;
     user.token = jwt.sign(user.login, config.secret);
+    //TODO:add expire date
 
     user.save(function (err, data) {
         if (err) {
@@ -41,6 +42,10 @@ exports.login = function (req, res) {
         }
 
         if (pwd.verifySync(Buffer.from(req.body.password), Buffer.from(user.password)) === securePassword.VALID){
+//TODO: verify if expired, generate new
+
+            req.session.user = user;
+
             return res.status(200).json({
                 "auth": true,
                 "token": user.token
@@ -54,8 +59,10 @@ exports.login = function (req, res) {
     });
 };
 
-exports.get = function(req, res) {
-    res.status(200).send({ auth: false, token: null });
+exports.logout = function(req, res) {
+    req.session.destroy(function(){
+        res.status(200).send({ auth: false, token: null });
+    });
 };
 
 function handleError(res, err) {

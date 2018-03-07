@@ -10,12 +10,6 @@ services:
       image: redis
       ports:
         - "6380:6379"
-    nginx:
-      image: nginx
-      ports:
-        - "8080:80"
-      volumes:
-        - ./html:/usr/share/nginx/html
     app1:
       build:
         context: ./build/app1
@@ -24,6 +18,8 @@ services:
       links:
         - mongo
         - redis
+      ports:
+        - "8080:10001"
       volumes:
         - ./build/app1:/root/app
     app2:

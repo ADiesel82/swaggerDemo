@@ -8,7 +8,10 @@
   "license": "",
   "main": "app.js",
   "dependencies": {
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.7",
     "express": "^4.12.3",
+    "express-session": "^1.15.6",
     "helmet": "^3.11.0",
     "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.6",

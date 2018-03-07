@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Rest API Application</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.0"></script>
+</head>
+<body>
+<div id="app" class="container h-100">
+    <div v-if="user === false" id="loginBox" class="row h-100 justify-content-center align-items-center">
+        <div class="col-6">
+            <div class="card">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a v-bind:class="tabs.login" class="nav-link" v-on:click="showTab('login')">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a v-bind:class="tabs.register" class="nav-link" v-on:click="showTab('register')">Registration</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <p v-if="errors.login.length">
+                        <b>Please correct the following error(s):</b>
+                    <ul>
+                        <li v-for="error in errors.login">{{ error }}</li>
+                    </ul>
+                    </p>
+                    <div v-show="tabs.login=='active'" class="tab-pane fade show active" id="login">
+                        <form id="login" class="col-12" action="/api/login" method="post" v-on:submit.prevent="sendJson">
+                            <h1>Login</h1>
+                            <div class="form-group">
+                                <label for="loginInput">Login</label>
+                                <input v-model="forms.login.login" type="text" class="form-control" id="loginInput" aria-describedby="loginHelp"
+                                       placeholder="user2">
+                                <small id="loginHelp" class="form-text text-muted">Please input your login here.
+                                    Recommendation: user[1-5]
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="passwordInput">Password</label>
+                                <input v-model="forms.login.password" type="password" class="form-control" id="passwordInput" placeholder="user2pass">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <div v-show="tabs.register=='active'" class="tab-pane fade show active">
+                        <p v-if="errors.register.length">
+                            <b>Please correct the following error(s):</b>
+                        <ul>
+                            <li v-for="error in errors.register">{{ error }}</li>
+                        </ul>
+                        </p>
+                        <form id="register" class="col-12" action="/api/register" method="post" v-on:submit.prevent="sendJson">
+                            <h1>Registration</h1>
+                            <div class="form-group">
+                                <label for="regLoginInput">Login</label>
+                                <input v-model="forms.register.login" type="text" class="form-control" id="regLoginInput" aria-describedby="loginHelp"
+                                       placeholder="user2">
+                                <small id="loginHelp" class="form-text text-muted">Please input your login here.
+                                    Recommendation: user[1-5]
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="regPasswordInput">Password</label>
+                                <input v-model="forms.register.password" type="password" class="form-control" id="regPasswordInput" placeholder="user2pass">
+                            </div>
+                            <div class="form-group">
+                                <label for="passwordInputRepeat">Password repeat</label>
+                                <input v-model="forms.register.passwordRepeat" type="password" class="form-control" id="passwordInputRepeat">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="user !== false" id="loginBox" class="row h-100 justify-content-center align-items-center">
+        <h1>Welcome, {{ user }}</h1>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Key</th>
+                <th scope="col">Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item, index) in userData">
+                <th scope="row">{{ index }}</th>
+                <td>{{ item }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+<script>
+    Vue.config.devtools = true;
+
+    var user = <%- user %>;
+    var userData = <%- userData %>;
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            errors: {
+                register: [],
+                login: []
+            },
+            user: user,
+            userData: userData,
+            token: null,
+            tabs: {
+                login: 'active',
+                register: ''
+            },
+            forms: {
+                login: {
+                    login: '',
+                    password: ''
+                },
+                register: {
+                    login: '',
+                    password: '',
+                    passwordRepeat: ''
+                }
+            }
+        },
+        methods: {
+            showTab: function (tab) {
+                var self = this;
+                Object.keys(this.tabs).forEach(function (key, index) {
+                    self.tabs[key] = '';
+                });
+                this.tabs[tab] = 'active';
+            },
+            sendJson: function (event) {
+                var formId = event.target.id;
+                var formData = this.forms[formId];
+                var errors = [];
+
+                if(!formData.login) errors.push("Name required.");
+                if(!formData.password) errors.push("Password required.");
+                if (formData.passwordRepeat && formData.password !== formData.passwordRepeat) errors.push("Passwords do not match");
+                this.errors[formId] = errors;
+                if(this.errors.length > 0) return false;
+
+                console.log(event.target);
+                var data = JSON.stringify(formData);
+                console.log(data);
+                this.$http.post(event.target.action, data, {
+                    emulateJSON: true
+                }).then(response => {
+                    location.reload();
+                }, response => {
+                    console.log(response);
+                    alert("Error! Take a look concole");
+                });
+
+                return false;
+            }
+        }
+    });
+</script>
+</html>
