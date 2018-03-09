@@ -32,6 +32,8 @@ services:
         - redis
       volumes:
         - ./build/app2:/root/app
+      ports:
+        - "10010:10002"
 #networks:
 #  public:
 #  backend:

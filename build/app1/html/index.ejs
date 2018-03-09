@@ -12,6 +12,7 @@
 <div id="app" class="container h-100">
     <div v-if="user === false" id="loginBox" class="row h-100 justify-content-center align-items-center">
         <div class="col-6">
+            <div v-if="alert!=''" class="p-3 mb-2 bg-info text-white">{{alert}}</div>
             <div class="card">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
@@ -22,12 +23,14 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <p v-if="errors.login.length">
-                        <b>Please correct the following error(s):</b>
-                    <ul>
-                        <li v-for="error in errors.login">{{ error }}</li>
-                    </ul>
-                    </p>
+                    <div v-if="errors.login.length" class="col-12">
+                        <p>
+                            <b>Please correct the following error(s):</b>
+                        <ul class="text-danger">
+                            <li v-for="error in errors.register">{{ error }}</li>
+                        </ul>
+                        </p>
+                    </div>
                     <div v-show="tabs.login=='active'" class="tab-pane fade show active" id="login">
                         <form id="login" class="col-12" action="/api/login" method="post" v-on:submit.prevent="sendJson">
                             <h1>Login</h1>
@@ -47,12 +50,14 @@
                         </form>
                     </div>
                     <div v-show="tabs.register=='active'" class="tab-pane fade show active">
-                        <p v-if="errors.register.length">
+                        <div v-if="errors.register.length" class="col-12">
+                        <p>
                             <b>Please correct the following error(s):</b>
-                        <ul>
+                        <ul class="text-danger">
                             <li v-for="error in errors.register">{{ error }}</li>
                         </ul>
                         </p>
+                        </div>
                         <form id="register" class="col-12" action="/api/register" method="post" v-on:submit.prevent="sendJson">
                             <h1>Registration</h1>
                             <div class="form-group">
@@ -111,6 +116,7 @@
                 register: [],
                 login: []
             },
+            alert: '',
             user: user,
             userData: userData,
             token: null,
@@ -156,9 +162,11 @@
                     emulateJSON: true
                 }).then(response => {
                     location.reload();
+                    this.alert = 'Operation was successfull';
                 }, response => {
-                    console.log(response);
-                    alert("Error! Take a look concole");
+                    this.errors[formId].push("Wrong login or password");
+                    // console.log(response);
+                    // alert("Error! Take a look concole");
                 });
 
                 return false;

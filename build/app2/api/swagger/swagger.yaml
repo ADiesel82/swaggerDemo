@@ -1,58 +1,61 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Hello World App
-# during dev, should point to your local machine
+  title: App2 with user balance
 host: localhost:10010
-# basePath prefixes all resource paths 
-basePath: /
-# 
+basePath: /api
 schemes:
-  # tip: remove http to make production-grade
   - http
-  - https
-# format of bodies a client can send (Content-Type)
+securityDefinitions:
+  jwt:
+    type: apiKey
+    name: jwt
+    in: header
 consumes:
   - application/json
-# format of the responses to the client (Accepts)
 produces:
   - application/json
 paths:
-  /hello:
-    # binds a127 app logic to a route
+  /balance/{username}:
     x-swagger-router-controller: main
     get:
-      description: Returns 'Hello' to the caller
+      description: Balance of an user
       # used as the method name of the controller
-      operationId: getUserInfo
+      operationId: getUserBalance
+      security:
+        - jwt: []
       parameters:
-        - name: name
-          in: query
-          description: The name of the person to whom to say hello
-          required: false
+        - name: username
+          in: path
+          description: Username of requested user
+          required: true
           type: string
       responses:
         "200":
           description: Success
           schema:
-            # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
-        # responses may fall through to errors
+            $ref: "#/definitions/BalanceResponse"
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
-# complex objects have schema definitions
 definitions:
-  HelloWorldResponse:
-    required:
-      - message
+  BalanceObject:
+    type: object
     properties:
-      message:
+      amount:
+        type: number
+      currency:
         type: string
+  BalanceResponse:
+    type: object
+    properties:
+      balance: 
+        $ref: "#/definitions/BalanceObject"
   ErrorResponse:
+    type: object
     required:
       - message
     properties:

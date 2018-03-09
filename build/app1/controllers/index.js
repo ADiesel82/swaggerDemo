@@ -10,7 +10,11 @@ exports.index = function(req, res) {
     if (req.session.user){
 
         user = req.session.user.login;
-        var userInfo = http.request(options.url+'/', function(res)
+
+        var userInfoUrl = options.url+'/balance/' + user;
+
+
+        var userInfo = http.request(userInfoUrl, function(res)
         {
             var output = '';
             console.log(options.host + ':' + res.statusCode);
@@ -21,8 +25,9 @@ exports.index = function(req, res) {
             });
 
             res.on('end', function() {
-                userData = JSON.parse(output);
-                console.log(userData);
+                console.log(output);
+                // userData = JSON.parse(output);
+                // console.log(userData);
                 res.render("index", {"user": JSON.stringify(user), "userData": JSON.stringify(userData)});
             });
         });
