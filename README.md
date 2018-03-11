@@ -24,7 +24,7 @@ user1/user1pass
 user2/user2pass
 ```
 
-App2 has 100 test-users with username like: userX (example: user1, user2...user100)
+App2 has 99 test-users with username like: userX (example: user1, user2...user99)
 
 
 **To take a look App1/2 OpenAPI editor:**
