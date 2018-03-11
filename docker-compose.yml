@@ -29,6 +29,8 @@ services:
           port: 10002
       links:
         - mongo
+      expose:
+        - 10002
 #      volumes:
 #        - ./build/app2:/root/app
 #      ports:

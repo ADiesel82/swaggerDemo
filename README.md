@@ -26,6 +26,11 @@ user2/user2pass
 
 App2 has 99 test-users with username like: userX (example: user1, user2...user99)
 
+!!!In a case if mongo has no test users:
+``` 
+cd swaggerDemo
+docker-compose exec app1 curl -X GET http://app2:10002/api/fill/test -H 'Content-Type: application/json'
+```
 
 **To take a look App1/2 OpenAPI editor:**
 
