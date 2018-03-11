@@ -6,10 +6,10 @@ services:
         - "27017:27017"
       volumes:
         - ./db:/data/db
-    redis:
-      image: redis
-      ports:
-        - "6380:6379"
+#    redis:
+#      image: redis
+#      ports:
+#        - "6380:6379"
     app1:
       build:
         context: ./build/app1
@@ -17,11 +17,11 @@ services:
           port: 10001
       links:
         - mongo
-        - redis
+        - app2
       ports:
         - "8080:10001"
-      volumes:
-        - ./build/app1:/root/app
+#      volumes:
+#        - ./build/app1:/root/app
     app2:
       build:
         context: ./build/app2
@@ -29,11 +29,10 @@ services:
           port: 10002
       links:
         - mongo
-        - redis
-      volumes:
-        - ./build/app2:/root/app
-      ports:
-        - "10010:10002"
+#      volumes:
+#        - ./build/app2:/root/app
+#      ports:
+#        - "8081:10002"
 #networks:
 #  public:
 #  backend:

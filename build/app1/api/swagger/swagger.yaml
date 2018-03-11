@@ -8,14 +8,14 @@ basePath: /api
 schemes:
   - http
 #  - https
-consumes:
-  - application/json
-produces:
-  - application/json
 paths:
   /register:
     x-swagger-router-controller: auth
     post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
       description: Registers user by login/password and adds token for app2
       operationId: register
       parameters:
@@ -36,6 +36,10 @@ paths:
   /login:
     x-swagger-router-controller: auth
     post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
       description: Login by login/password
       operationId: login
       parameters:
@@ -58,17 +62,13 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
   /logout:
+    x-swagger-router-controller: auth
     get:
       description: logout
+      operationId: logout
       responses:
         "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/LoginResponse"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
+          description: Redirect to home page
 definitions:
   SuccessSimpleResponse:
       required:

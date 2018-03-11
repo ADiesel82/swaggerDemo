@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Test Rest API Application</title>
@@ -23,11 +23,11 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div v-if="errors.login.length" class="col-12">
+                    <div v-if="errors.login.length > 0" class="col-12">
                         <p>
                             <b>Please correct the following error(s):</b>
                         <ul class="text-danger">
-                            <li v-for="error in errors.register">{{ error }}</li>
+                            <li v-for="error in errors.login">{{ error }}</li>
                         </ul>
                         </p>
                     </div>
@@ -50,7 +50,7 @@
                         </form>
                     </div>
                     <div v-show="tabs.register=='active'" class="tab-pane fade show active">
-                        <div v-if="errors.register.length" class="col-12">
+                        <div v-if="errors.register.length > 0" class="col-12">
                         <p>
                             <b>Please correct the following error(s):</b>
                         <ul class="text-danger">
@@ -58,7 +58,7 @@
                         </ul>
                         </p>
                         </div>
-                        <form id="register" class="col-12" action="/api/register" method="post" v-on:submit.prevent="sendJson">
+                        <form id="register" class="col-12" action="/api/register" method="post" @submit.prevent="sendJson">
                             <h1>Registration</h1>
                             <div class="form-group">
                                 <label for="regLoginInput">Login</label>
@@ -85,7 +85,10 @@
     </div>
 
     <div v-if="user !== false" id="loginBox" class="row h-100 justify-content-center align-items-center">
-        <h1>Welcome, {{ user }}</h1>
+        <div>
+            <h1>Welcome, {{ user }}</h1>
+            <a href="/api/logout">Logout</a>
+        </div>
         <table class="table">
             <thead>
             <tr>
@@ -126,8 +129,8 @@
             },
             forms: {
                 login: {
-                    login: '',
-                    password: ''
+                    login: 'user1',
+                    password: 'user1pass'
                 },
                 register: {
                     login: '',
@@ -149,11 +152,12 @@
                 var formData = this.forms[formId];
                 var errors = [];
 
-                if(!formData.login) errors.push("Name required.");
-                if(!formData.password) errors.push("Password required.");
+                if (formData.login == '') errors.push("Name required");
+                if (formData.password == '') errors.push("Password required");
                 if (formData.passwordRepeat && formData.password !== formData.passwordRepeat) errors.push("Passwords do not match");
                 this.errors[formId] = errors;
-                if(this.errors.length > 0) return false;
+
+                if(this.errors[formId].length > 0) return false;
 
                 console.log(event.target);
                 var data = JSON.stringify(formData);

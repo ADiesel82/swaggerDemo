@@ -4,8 +4,6 @@ ARG port
 
 ENV PORT $port
 
-RUN printenv
-
 RUN mkdir -p /root/app
 
 COPY ./ /root/app

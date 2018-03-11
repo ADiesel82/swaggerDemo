@@ -1,16 +1,25 @@
 'use strict';
 
 var SwaggerExpress = require('swagger-express-mw');
-var passport = require('passport');
 var app = require('express')();
-
-app.use(passport.initialize());
 
 module.exports = app; // for testing
 
 var config = {
-    appRoot: __dirname // required config
+    appRoot: __dirname, // required config
+    swaggerSecurityHandlers: {
+        jwt: require('./api/helpers/auth.mw').jwt
+    }
 };
+
+
+var mongoose = require('mongoose');
+var db = mongoose.connection;
+mongoose.connect("mongodb://mongo:27017/app2");
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+    console.log("DB Connected");
+});
 
 SwaggerExpress.create(config, function(err, swaggerExpress) {
   if (err) { throw err; }

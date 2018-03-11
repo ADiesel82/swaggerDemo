@@ -41,6 +41,13 @@ exports.login = function (req, res) {
             });
         }
 
+        if (!user){
+            return res.status(401).json({
+                "auth": false,
+                "token": null
+            });
+        }
+
         if (pwd.verifySync(Buffer.from(req.body.password), Buffer.from(user.password)) === securePassword.VALID){
 //TODO: verify if expired, generate new
 
@@ -60,9 +67,13 @@ exports.login = function (req, res) {
 };
 
 exports.logout = function(req, res) {
-    req.session.destroy(function(){
-        res.status(200).send({ auth: false, token: null });
-    });
+    if (req.session.user) {
+        req.session.destroy(function () {
+            res.redirect('/');
+        });
+    } else {
+        res.redirect('/');
+    }
 };
 
 function handleError(res, err) {

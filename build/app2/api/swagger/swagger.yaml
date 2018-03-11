@@ -9,32 +9,41 @@ schemes:
 securityDefinitions:
   jwt:
     type: apiKey
-    name: jwt
+    name: Bearer
     in: header
 consumes:
   - application/json
 produces:
   - application/json
 paths:
-  /balance/{username}:
+  /balance:
     x-swagger-router-controller: main
     get:
-      description: Balance of an user
+      description: Balance of an user (username in token)
       # used as the method name of the controller
       operationId: getUserBalance
       security:
         - jwt: []
-      parameters:
-        - name: username
-          in: path
-          description: Username of requested user
-          required: true
-          type: string
       responses:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/BalanceResponse"
+            $ref: "#/definitions/BalanceObject"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /fill/test:
+    x-swagger-router-controller: main
+    get:
+      description: Balance of an user (username in token)
+      # used as the method name of the controller
+      operationId: fillWithTestData
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/BalanceResponses"
         default:
           description: Error
           schema:
@@ -45,15 +54,16 @@ definitions:
   BalanceObject:
     type: object
     properties:
-      amount:
+      username:
+        type: string
+      balance:
         type: number
       currency:
         type: string
-  BalanceResponse:
-    type: object
-    properties:
-      balance: 
-        $ref: "#/definitions/BalanceObject"
+  BalanceResponses:
+    type: array
+    items:
+      $ref: "#/definitions/BalanceObject"
   ErrorResponse:
     type: object
     required:

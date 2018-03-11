@@ -31,6 +31,7 @@ app.get('/', indexController.index);
 
 var mongoose = require('mongoose');
 var db = mongoose.connection;
+//TODO: change host to mongo
 mongoose.connect("mongodb://mongo:27017/app1");
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -43,7 +44,9 @@ var config = {
 };
 
 SwaggerExpress.create(config, function(err, swaggerExpress) {
-  if (err) { throw err; }
+  if (err) {
+      throw err;
+  }
 
   // install middleware
   swaggerExpress.register(app);

@@ -1,3 +1,7 @@
 module.exports = {
-    'url': 'http://app2:10002/api'
+    "app2": {
+        "host": "app2",
+        "port": 10002,
+        "protocol": "http:"
+    }
 };
