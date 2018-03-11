@@ -33,7 +33,3 @@ services:
 #        - ./build/app2:/root/app
 #      ports:
 #        - "8081:10002"
-#networks:
-#  public:
-#  backend:
-#    - driver: overlay

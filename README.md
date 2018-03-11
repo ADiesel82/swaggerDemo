@@ -1,6 +1,6 @@
 Swagger demo 2
 
-Description:
+Task description:
 Фронт - поле для логина и пароля + кнопка регистрация + кнопка получить данные
 
 Бэк - Сервис 1 принимает логин пароль в случае если это регистрация - криптует пароль и сохраняет в бд, создает и хранит токен для второго сервиса
@@ -11,22 +11,36 @@ Description:
 
 To start applications:
 ```
+cd swaggerDemo
 docker-compose up --build -d
 ```
 
-TODO:
-To restore test-database:
+App1 can be found in a browser by url: **http://localhost:8080/**
+
+App1 has 2 registered users:
 ```
-docker-compose exec mongo ....
+user1/user1pass
+
+user2/user2pass
 ```
 
+App2 has 100 test-users with username like: userX (example: user1, user2...user100)
+
+
+**To take a look App1/2 OpenAPI editor:**
 
 Run **app1** OpenApi editor:
 ```
+cd swaggerDemo
 swagger project edit build/app1
 ```
 
 Run **app2** OpenApi editor:
 ```
+cd swaggerDemo
 swagger project edit build/app2
 ```
+
+Known issues:
+- no success alerts
+- 
